@@ -75,24 +75,22 @@ class LP_Addon_LearningPath_Dashboard{
         if ($posts->have_posts()){
             while ($posts->have_posts()):
                 $posts->the_post();
-                $out .= '<div class="learning_path">
+                $out .= '<div class="learning_path row">
                 <h2>Path Name: '.get_the_title().'</h2>
                 <p> ' .get_the_content().'</p>';
                 $courseID = get_post_meta(get_the_ID(), '_lp_learning_path_course', false);
                 $arrayLen = sizeof($courseID[0]);
                 foreach($courseID[0] as $i){
                     $courseObj = LP_Course::get_course($i);
-                    $out .='<h3><a href="'.get_the_permalink($i).'">'.$courseObj->post->post_title.'</a></h3>';
-                    $out .='<p>'.$courseObj->post->post_content.'</p>';
-                    $out .='<div class="img-responsive">'.$courseObj->get_image().'</div>';
+                    $out .='<div class="col-md-3"><h3><a href="'.get_the_permalink($i).'">'.$courseObj->post->post_title.'</a></h3>';
+                    $out .='<div class="img-responsive">'.$courseObj->get_image().'<br><br>';
+                    $out .='<p>'.$courseObj->post->post_content.'</p></div></div>';
+                    /*
+                    $userID = get_current_user_id();
+                    $out .='<p>'.learn_press_get_user_course_status( $userID, $i )[0].'</p>';
+                    */
                 }
                 $out .= '</div>';
-                /*
-                for($i = 0; $i < $arrayLen; $i++){
-                    $courseObj = LP_Course::get_course($i[i][0]);
-                    $out .='<p><a href="'.get_the_permalink($i).'">'.$courseObj->post->post_title.'</a></p>';
-                }
-                */
             endwhile;
             wp_reset_postdata();
         } else {
