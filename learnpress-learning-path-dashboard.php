@@ -63,11 +63,15 @@ class LP_Addon_LearningPath_Dashboard{
         add_shortcode('lp_learning_path', array($this, 'learning_path_query'));
         //add_action( 'admin_menu', array($this, 'addMyMenu'));
     }
+    //load jquery
     function admin_init(){
         if(is_admin()){
             wp_enqueue_style('jquery-ui-custom', get_template_directory_uri().'/css/jquery-ui-custom.css');
         }
     }
+
+    // add shortcode callback function, quearies the db for our cpt and then loops through them displaying the content
+    // and the thumbnail, and the status of the current user 
     function learning_path_query($atts, $content){
         global $post;
         $posts = new WP_Query('post_type=lp_learning_path_cpt');
@@ -83,12 +87,15 @@ class LP_Addon_LearningPath_Dashboard{
                 foreach($courseID[0] as $i){
                     $courseObj = LP_Course::get_course($i);
                     $out .='<div class="col-md-3"><h3><a href="'.get_the_permalink($i).'">'.$courseObj->post->post_title.'</a></h3>';
-                    $out .='<div class="img-responsive">'.$courseObj->get_image().'<br><br>';
-                    $out .='<p>'.$courseObj->post->post_content.'</p></div></div>';
-                    /*
-                    $userID = get_current_user_id();
-                    $out .='<p>'.learn_press_get_user_course_status( $userID, $i )[0].'</p>';
-                    */
+                    $out .='<div class="img-responsive">'.$courseObj->get_image().'</div><br><br>';
+                    $out .='<p>'.$courseObj->post->post_content.'</p>';
+                    $cUser = learn_press_get_current_user();
+                    $userGrade = $cUser->get_course_grade($i);
+                    if($userGrade){
+                        $out .='<div><p>Course Status: <strong>'.$userGrade.'</strong></p></div></div>';
+                    } else {
+                        $out .='<div><p>Course Status: <strong> Not Enrolled </strong></p></div></div>';
+                    }
                 }
                 $out .= '</div>';
             endwhile;
@@ -98,7 +105,7 @@ class LP_Addon_LearningPath_Dashboard{
         }
         return $out;
     }
-
+    //creates the custom post type
     function create_learning_path(){
         register_post_type( 'lp_learning_path_cpt',
         array(
@@ -138,6 +145,7 @@ class LP_Addon_LearningPath_Dashboard{
         )
     );
 }
+/*
 public function sortable_courses(){
     echo '<ul class="sortable  ui-sortable">';
     $course_options = $this->get_courses();
@@ -167,11 +175,13 @@ public function sortable_courses(){
         </script>
     <?php
 }
+*/
+//add metaboxes to the custom post type learn_press_learning_path_cpt
 public function add_learning_path_meta_boxes() {
     $prefix                                        = '_lp_';
     new RW_Meta_Box(
         apply_filters( 'learn_press_learning_path_general_meta_box', array(
-                'title'      => __( 'General Settings', 'learnpress' ),
+                'title'      => __( 'Learning Path Courses', 'learnpress' ),
                 'post_types' =>'lp_learning_path_cpt',
                 'context'    => 'normal',
                 'priority'   => 'high',
@@ -188,26 +198,14 @@ public function add_learning_path_meta_boxes() {
                         'clone'       => true,
                         'sort_clone'  => true,
                         'std'         => ''
-                    ),
-                    array(
-                        'name' => __( 'Show Completed Courses', 'learnpress' ),
-                        'id'   => "{$prefix}show_completed_path_courses",
-                        'type' => 'yes_no',
-                        'desc' => __( 'Display courses from this path that have been completed', 'learnpress' ),
-                        'std'  => 'no'
-                    ),
-                    array(
-                        'name' => __( 'Show Next Step Only', 'learnpress' ),
-                        'id'   => "{$prefix}show_next_step_only",
-                        'type' => 'yes_no',
-                        'desc' => __( 'Only show the next step in the path ', 'learnpress' ),
-                        'std'  => 'no'
                     )
                 )
             )
         )
     );
     }
+    // db call to pull learnpress courses that have been published
+    // used to populate our select dropdown metabox field
     function get_courses() {
 		global $wpdb;
 		$post_type    = 'lp_course';
@@ -219,7 +217,8 @@ public function add_learning_path_meta_boxes() {
         $courses = $wpdb->get_results( $query );
         return $courses;
     }
-    
+    //deprecated admin panel, cpt editor is to comfy to build my own panel
+    //maybe on a really slow day I would
     function admin_panel(){
         require_once( dirname( __FILE__ ) . '/template/admin.php' );
     }
@@ -233,11 +232,12 @@ public function add_learning_path_meta_boxes() {
 		}
 		return self::$_instance;
 	}
-
+    // load our text domain, not implemented currently but should for translation reasons
     static function load_text_domain() {
 		if ( function_exists( 'learn_press_load_plugin_text_domain' ) ) {
 			learn_press_load_plugin_text_domain( LP_LPATH_DASH_PATH, 'learnpress-learningpath-dashboard' );
 		}
 	}
 }
+//create an instance of our add - ons main class 
 add_action( 'learn_press_loaded', array( 'LP_Addon_LearningPath_Dashboard', 'instance' ) );
