@@ -66,6 +66,8 @@ class LP_Addon_LearningPath_Dashboard{
     //load jquery
     function admin_init(){
         if(is_admin()){
+            wp_register_style('centerblocks', LP_LPATH_DASH_PATH.'/assets/lplpd.css');
+            wp_enqueue_style('centerblocks');
             wp_enqueue_style('jquery-ui-custom', get_template_directory_uri().'/css/jquery-ui-custom.css');
         }
     }
@@ -75,18 +77,18 @@ class LP_Addon_LearningPath_Dashboard{
     function learning_path_query($atts, $content){
         global $post;
         $posts = new WP_Query('post_type=lp_learning_path_cpt');
-        $out = '';
+        $out = '<div class="container-fluid">';
         if ($posts->have_posts()){
             while ($posts->have_posts()):
                 $posts->the_post();
-                $out .= '<div class="learning_path row">
+                $out .= '<div class="learning_path row text-center">
                 <h2>Path Name: '.get_the_title().'</h2>
-                <p> ' .get_the_content().'</p>';
+                <p> ' .get_the_content().'</p><div class="col-md-2"></div>';
                 $courseID = get_post_meta(get_the_ID(), '_lp_learning_path_course', false);
                 $arrayLen = sizeof($courseID[0]);
                 foreach($courseID[0] as $i){
                     $courseObj = LP_Course::get_course($i);
-                    $out .='<div class="col-md-3"><h3><a href="'.get_the_permalink($i).'">'.$courseObj->post->post_title.'</a></h3>';
+                    $out .='<div class="col-md-4 centered"><h3><a href="'.get_the_permalink($i).'">'.$courseObj->post->post_title.'</a></h3>';
                     $out .='<div class="img-responsive">'.$courseObj->get_image().'</div><br><br>';
                     $out .='<p>'.$courseObj->post->post_content.'</p>';
                     $cUser = learn_press_get_current_user();
@@ -103,7 +105,7 @@ class LP_Addon_LearningPath_Dashboard{
         } else {
             return;
         }
-        return $out;
+        return ($out .='</div>');
     }
     //creates the custom post type
     function create_learning_path(){
@@ -145,6 +147,7 @@ class LP_Addon_LearningPath_Dashboard{
         )
     );
 }
+//before deciding to use rwmb 
 /*
 public function sortable_courses(){
     echo '<ul class="sortable  ui-sortable">';
