@@ -38,7 +38,7 @@ class LP_Addon_LearningPath_Dashboard{
 	/**
 	 * @var string
 	 */
-    private $_plugin_path = '';
+    private $_plugin_template_path = '';
 
     protected $_meta_boxes = array();
 
@@ -50,9 +50,9 @@ class LP_Addon_LearningPath_Dashboard{
     function __construct(){
         $this->_post_type = 'lp_learning_path_cpt';
         $this->_tab_slug = sanitize_title( __( 'learning-path-dashboard', 'learnpress' ) );
-        $this->_plugin_path = LP_LPATH_DASH_PATH;
+        $this->_plugin_template_path = LP_LPATH_DASH_PATH.'/template/';
         $this->_plugin_url  = untrailingslashit( plugins_url( '/', LP_LPATH_DASH_FILE ) );
-        add_action('init', array($this, 'admin_init'));
+        //add_action('init', array($this, 'admin_init'));
         //add_filter('learn_press_course_settings_meta_box_args', array($this,'learn_press_learningpaths_add_on'), 15);
         //add_action( 'plugins_loaded', array( __CLASS__, 'load_text_domain' ) );
         //add_filter( 'learn_press_user_profile_tabs', array( $this, 'learningpath_dashboard_tab' ), 100, 2 );
@@ -61,10 +61,18 @@ class LP_Addon_LearningPath_Dashboard{
         add_action( 'load-post.php', array( $this, 'add_learning_path_meta_boxes' ), 0 );
         add_action( 'load-post-new.php', array( $this, 'add_learning_path_meta_boxes' ), 0 );
         add_shortcode('lp_learning_path', array($this, 'learning_path_query'));
+        add_action( 'wp_enqueue_scripts', array( $this, 'learningPath_scripts' ) );
+        LP_Request_Handler::register_ajax( 'learning_path_add_path_to_user', array( $this, 'learning_path_add_path_to_user' ) );
         //add_action( 'admin_menu', array($this, 'addMyMenu'));
+    }
+
+    //load js for ajax requests
+    function learningPath_scripts(){
+        wp_enqueue_script( 'learning-path-ajax-script', untrailingslashit( plugins_url( '/', LP_LPATH_DASH_FILE ) )  . '/assets/learning-path.js' , array( 'jquery' ) );
     }
     //load jquery
     function admin_init(){
+        //define( 'LEARNINGPATH_THEME_TMPL', learn_press_template_path() . '/addons/learning-path-dashboard/' );
         if(is_admin()){
             wp_register_style('centerblocks', LP_LPATH_DASH_PATH.'/assets/lplpd.css');
             wp_enqueue_style('centerblocks');
@@ -75,37 +83,24 @@ class LP_Addon_LearningPath_Dashboard{
     // add shortcode callback function, quearies the db for our cpt and then loops through them displaying the content
     // and the thumbnail, and the status of the current user 
     function learning_path_query($atts, $content){
-        global $post;
-        $posts = new WP_Query('post_type=lp_learning_path_cpt');
-        $out = '<div class="container-fluid">';
-        if ($posts->have_posts()){
-            while ($posts->have_posts()):
-                $posts->the_post();
-                $out .= '<div class="learning_path row text-center">
-                <h2>Path Name: '.get_the_title().'</h2>
-                <p> ' .get_the_content().'</p><div class="col-md-2"></div>';
-                $courseID = get_post_meta(get_the_ID(), '_lp_learning_path_course', false);
-                $arrayLen = sizeof($courseID[0]);
-                foreach($courseID[0] as $i){
-                    $courseObj = LP_Course::get_course($i);
-                    $out .='<div class="col-md-4 centered"><h3><a href="'.get_the_permalink($i).'">'.$courseObj->post->post_title.'</a></h3>';
-                    $out .='<div class="img-responsive">'.$courseObj->get_image().'</div><br><br>';
-                    $out .='<p>'.$courseObj->post->post_content.'</p>';
-                    $cUser = learn_press_get_current_user();
-                    $userGrade = $cUser->get_course_grade($i);
-                    if($userGrade){
-                        $out .='<div><p>Course Status: <strong>'.$userGrade.'</strong></p></div></div>';
-                    } else {
-                        $out .='<div><p>Course Status: <strong> Not Enrolled </strong></p></div></div>';
-                    }
-                }
-                $out .= '</div>';
-            endwhile;
-            wp_reset_postdata();
-        } else {
+        ob_start();
+        require_once($this->_plugin_template_path.'shortcodeDashboard.php');
+        return ob_get_clean();
+    }
+
+    //handles posts from frontend ajax to set a learningpath for the user(meta)
+
+    function learning_path_add_path_to_user(){
+        $nonce = !empty( $_POST['nonce']) ? $_POST['nonce']: null;
+        if(!wp_verify_nonce($nonce, 'learning_path_add_path_to_user')){
+            die ( __('you have been DENIED', 'learnpress'));
+        }
+        $path_id = !empty( $_POST['pathID'] ) ? absint( $_POST['pathID'] ) : 0;
+        $user_id = !empty( $_POST['userID'] ) ? absint( $_POST['userID'] ) : 0;
+        if ((get_post_type($path_id) != 'lp_learning_path_cpt') || !$user_id){
             return;
         }
-        return ($out .='</div>');
+        update_user_meta($user_id, '_lpr_learning_path', $path_id);
     }
     //creates the custom post type
     function create_learning_path(){
