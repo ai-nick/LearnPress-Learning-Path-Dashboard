@@ -13,9 +13,9 @@ $posts = new WP_Query('post_type=lp_learning_path_cpt');
 $out = '<div class="container-fluid">';
 $cUser = learn_press_get_current_user();
 $cUserID = get_current_user_id();
-$userPath = get_user_meta($cUserID, '_lpr_learning_path');
+$userPath = get_user_meta($cUserID, '_lpr_learning_path', true);
 //$out .='<p>'.$userPath[0].'</p>';
-//$out .='<p>'.sizeof($userPath).'</p>';
+//$out .='<p>'.($userPath).'</p>';
 if ($posts->have_posts()){
 	while ($posts->have_posts()):
 		$posts->the_post();
@@ -23,11 +23,13 @@ if ($posts->have_posts()){
 		$out .= '<div class="learning_path row text-center">
 		<h2>Path Name: '.get_the_title().'</h2>';
 		if($cUserID){
-			if($userPath[0] != $postID){
+			if($userPath != $postID){
 			$out .='<button class="add-to-lp" data-id="'.$postID.'"
 			data-nonce="'.wp_create_nonce('learning_path_add_path_to_user').'" data-user="'.$cUserID.'">Take this path</button>';
 			} else {
 				$out .= '<p>Current Path</p>';
+				$out .='<button class="add-to-lp remove-lp-path" data-id=""
+			data-nonce="'.wp_create_nonce('learning_path_add_path_to_user').'" data-user="'.$cUserID.'">quit this path</button>';
 			} 
 		}
 		$out .='<p> ' .get_the_content().'</p><div class="col-md-2"></div>';

@@ -6,6 +6,7 @@
         var pathID = btn.attr('data-id');
         var nonceIn = btn.attr('data-nonce');
         var uID = btn.attr('data-user');
+        //var deleteData = btn.attr('data-delete') ? btn.attr('data-delete') : 'no';
         var ajaxurl = window.location.href;
         data =  {'lp-ajax': 'learning_path_add_path_to_user',
                 pathID: pathID,

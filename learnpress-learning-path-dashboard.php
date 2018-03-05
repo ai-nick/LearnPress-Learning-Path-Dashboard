@@ -97,6 +97,10 @@ class LP_Addon_LearningPath_Dashboard{
         }
         $path_id = !empty( $_POST['pathID'] ) ? absint( $_POST['pathID'] ) : 0;
         $user_id = !empty( $_POST['userID'] ) ? absint( $_POST['userID'] ) : 0;
+        if ($path_id == 0){
+            delete_user_meta($user_id, '_lpr_learning_path');
+            return;
+        }
         if ((get_post_type($path_id) != 'lp_learning_path_cpt') || !$user_id){
             return;
         }
