@@ -62,14 +62,72 @@ class LP_Addon_LearningPath_Dashboard{
         add_action( 'load-post-new.php', array( $this, 'add_learning_path_meta_boxes' ), 0 );
         add_shortcode('lp_learning_path', array($this, 'learning_path_query'));
         add_action( 'wp_enqueue_scripts', array( $this, 'learningPath_scripts' ) );
+        add_shortcode('lp_learning_path_summary', array($this, 'learningpath_summary_loader'));
         LP_Request_Handler::register_ajax( 'learning_path_add_path_to_user', array( $this, 'learning_path_add_path_to_user' ) );
         //add_action( 'admin_menu', array($this, 'addMyMenu'));
     }
 
+    function learningpath_summary_loader(){
+        $cUser = learn_press_get_current_user();
+        $sPath = get_user_meta($cUser->id, '_lpr_learning_path');
+        $out = '<div>';
+        if ($sPath){
+            $out.='<h2>Current Learning Path:</h2>';
+            $currentPath = $this->get_path_by_ID($sPath[0]);
+            $post = get_post($currentPath);
+            $out .= '<h4>'.$currentPath[0]->post_title.'</h4></div>';
+            $out .= '<div class="row"><div class="col-md-2"></div>';
+            
+            $courseID = get_post_meta($sPath[0], '_lp_learning_path_course', false);
+            //$out .= '<p>'.$courseID[0][1].'</p></div>';
+            
+            //$arrayLen = sizeof($courseID[0]);
+            foreach($courseID[0] as $i){
+                $courseObj = LP_Course::get_course($i);
+                $out .='<div class="col-md-4 centered"><h3><a href="'.get_the_permalink($i).'">'.$courseObj->post->post_title.'</a></h3>';
+                $out .='<div class="img-responsive">'.$courseObj->get_image().'</div><br><br>';
+                $out .='<p>'.$courseObj->post->post_content.'</p>';
+                $userGrade = $cUser->get_course_grade($i);
+                if($userGrade){
+                    $out .='<div><p>Course Status: <strong>'.$userGrade.'</strong></p></div></div>';
+                } else {
+                    $out .='<div><p>Course Status: <strong> Not Enrolled </strong></p></div></div>';
+                }
+            }
+            $out .= '</div>';
+            
+        } else {
+            $out .= '<h3>Possible Learning Paths:</h3>';
+            $currentPaths = new WP_Query('post_type=lp_learning_path_cpt');
+            if ($currentPaths->have_posts()){
+                while($currentPaths->have_posts()){
+                    $currentPaths->the_post();
+                    $out .= '<p>'.get_the_title().'</p>';
+                }
+            }
+            $out.='</div>';
+        }
+        //ob_start();
+        $out .='<br><br>';
+        return $out;
+    }
     //load js for ajax requests
     function learningPath_scripts(){
         wp_enqueue_script( 'learning-path-ajax-script', untrailingslashit( plugins_url( '/', LP_LPATH_DASH_FILE ) )  . '/assets/learning-path.js' , array( 'jquery' ) );
     }
+
+    function get_path_by_ID($pID) {
+		global $wpdb;
+		//$post_type    = 'lp_course';
+		$query        = $wpdb->prepare( "
+			SELECT *
+			FROM {$wpdb->posts}
+			WHERE post_type = %s AND ID = %s
+        ",'lp_learning_path_cpt', $pID );
+        $path = $wpdb->get_results( $query );
+        return $path;
+    }
+
     //load jquery
     function admin_init(){
         //define( 'LEARNINGPATH_THEME_TMPL', learn_press_template_path() . '/addons/learning-path-dashboard/' );
