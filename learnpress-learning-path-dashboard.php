@@ -118,7 +118,6 @@ class LP_Addon_LearningPath_Dashboard{
 
     function get_path_by_ID($pID) {
 		global $wpdb;
-		//$post_type    = 'lp_course';
 		$query        = $wpdb->prepare( "
 			SELECT *
 			FROM {$wpdb->posts}

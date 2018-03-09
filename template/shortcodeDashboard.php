@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) || exit();
 
 $posts = new WP_Query('post_type=lp_learning_path_cpt');
 $out = '<div class="container-fluid">';
-$cUser = learn_press_get_current_user();
+//$cUser = learn_press_get_current_user();
 $cUserID = get_current_user_id();
 $userPath = get_user_meta($cUserID, '_lpr_learning_path', true);
 //$out .='<p>'.$userPath[0].'</p>';
@@ -40,7 +40,7 @@ if ($posts->have_posts()){
 			$out .='<div class="col-md-4 centered"><h3><a href="'.get_the_permalink($i).'">'.$courseObj->post->post_title.'</a></h3>';
 			$out .='<div class="img-responsive">'.$courseObj->get_image().'</div><br><br>';
 			$out .='<p>'.$courseObj->post->post_content.'</p>';
-			$userGrade = $cUser->get_course_grade($i);
+			$userGrade = $courseObj->get_course_result_html($cUserID);
 			if($userGrade){
 				$out .='<div><p>Course Status: <strong>'.$userGrade.'</strong></p></div></div>';
 			} else {
