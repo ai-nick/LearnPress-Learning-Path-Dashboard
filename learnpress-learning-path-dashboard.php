@@ -102,7 +102,10 @@ class LP_Addon_LearningPath_Dashboard{
             if ($currentPaths->have_posts()){
                 while($currentPaths->have_posts()){
                     $currentPaths->the_post();
+                    $postID = get_the_ID();
                     $out .= '<p>'.get_the_title().'</p>';
+                    $out .='<button class="add-to-lp" data-id="'.$postID.'"
+                    data-nonce="'.wp_create_nonce('learning_path_add_path_to_user').'" data-user="'.$cUser->ID.'">Take this path</button>';
                 }
             }
             $out.='</div>';

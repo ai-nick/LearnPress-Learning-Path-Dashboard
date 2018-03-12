@@ -8,8 +8,10 @@
  */
 defined( 'ABSPATH' ) || exit();
 //global $post;
+$argies = array('post_type'=>'lp_learning_path_cpt',
+				'order'=>'asc');
+$posts = new WP_Query($argies);
 
-$posts = new WP_Query('post_type=lp_learning_path_cpt');
 $out = '<div class="container-fluid">';
 //$cUser = learn_press_get_current_user();
 $cUserID = get_current_user_id();
