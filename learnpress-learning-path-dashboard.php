@@ -77,7 +77,7 @@ class LP_Addon_LearningPath_Dashboard{
             $post = get_post($currentPath);
             $out .= '<h4>'.$currentPath[0]->post_title.'</h4></div>';
             $out .='<button class="btn-danger add-to-lp remove-lp-path" data-id=""
-			data-nonce="'.wp_create_nonce('learning_path_add_path_to_user').'" data-user="'.$cUser->ID.'">quit this path</button>';
+			data-nonce="'.wp_create_nonce('learning_path_add_path_to_user').'" data-user="'.$cUser->ID.'">change your path</button>';
             $out .= '<div class="row"><div class="col-md-2"></div>';
             
             $courseID = get_post_meta($sPath[0], '_lp_learning_path_course', false);
