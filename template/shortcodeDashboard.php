@@ -19,38 +19,52 @@ $userPath = get_user_meta($cUserID, '_lpr_learning_path', true);
 //$out .='<p>'.$userPath[0].'</p>';
 //$out .='<p>'.($userPath).'</p>';
 if ($posts->have_posts()){
-	while ($posts->have_posts()):
-		$posts->the_post();
-		$postID = get_the_ID();
-		$out .= '<div class="learning_path row text-center">
-		<h2>Path Name: '.get_the_title().'</h2>';
-		if($cUserID){
-			if($userPath != $postID){
-			$out .='<button class="add-to-lp btn-success" data-id="'.$postID.'"
-			data-nonce="'.wp_create_nonce('learning_path_add_path_to_user').'" data-user="'.$cUserID.'">Take this path</button>';
-			} else {
+	if($userPath == ''){
+		$out .= '<div class="learning_path row text-center">';
+		while ($posts->have_posts()):
+			$posts->the_post();
+			$postID = get_the_ID();
+			$out .= '<div class="learning_path col-md-4 text-center">
+			<h2>Path Name: '.get_the_title().'</h2>';
+			if($cUserID){
+				$out .='<button class="add-to-lp btn-success" data-id="'.$postID.'"
+				data-nonce="'.wp_create_nonce('learning_path_add_path_to_user').'" data-user="'.$cUserID.'">
+				Take this path</button><br><br>'; 
+			}
+			$out .='<p> ' .get_the_content().'</p>';
+			$out .= '</div>';
+		endwhile;
+		$out .= '</div>';
+	} else {
+		while ($posts->have_posts()):
+			$posts->the_post();
+			$postID = get_the_ID();
+			if ($userPath == $postID){
+				$out .= '<div class="learning_path row text-center">
+				<h2>Path Name: '.get_the_title().'</h2>';
 				$out .= '<p>Current Path</p>';
 				$out .='<button class="btn-danger add-to-lp remove-lp-path" data-id=""
-			data-nonce="'.wp_create_nonce('learning_path_add_path_to_user').'" data-user="'.$cUserID.'">quit this path</button>';
-			} 
-		}
-		$out .='<p> ' .get_the_content().'</p><div class="col-md-2"></div>';
-		$courseID = get_post_meta($postID, '_lp_learning_path_course', false);
-		//$arrayLen = sizeof($courseID[0]);
-		foreach($courseID[0] as $i){
-			$courseObj = LP_Course::get_course($i);
-			$out .='<div class="col-md-4 centered"><h3><a href="'.get_the_permalink($i).'">'.$courseObj->post->post_title.'</a></h3>';
-			$out .='<div class="img-responsive">'.$courseObj->get_image().'</div><br><br>';
-			$out .='<p>'.$courseObj->post->post_content.'</p>';
-			$userGrade = $courseObj->get_course_result_html($cUserID);
-			if($userGrade){
-				$out .='<div><p>Course Status: <strong>'.$userGrade.'</strong></p></div></div>';
-			} else {
-				$out .='<div><p>Course Status: <strong> Not Enrolled </strong></p></div></div>';
+				data-nonce="'.wp_create_nonce('learning_path_add_path_to_user').'" data-user="'.$cUserID.'">
+				quit this path</button>';
+				$out .='<p> ' .get_the_content().'</p><div class="col-md-2"></div>';
+				$courseID = get_post_meta($postID, '_lp_learning_path_course', false);
+				//$arrayLen = sizeof($courseID[0]);
+				foreach($courseID[0] as $i){
+					$courseObj = LP_Course::get_course($i);
+					$out .='<div class="col-md-4 centered"><h3><a href="'.get_the_permalink($i).'">'.$courseObj->post->post_title.'</a></h3>';
+					$out .='<div class="img-responsive">'.$courseObj->get_image().'</div><br><br>';
+					$out .='<p>'.$courseObj->post->post_content.'</p>';
+					$userGrade = $courseObj->get_course_result_html($cUserID);
+					if($userGrade){
+						$out .='<div><p>Course Status: <strong>'.$userGrade.'</strong></p></div></div>';
+					} else {
+						$out .='<div><p>Course Status: <strong> Not Enrolled </strong></p></div></div>';
+					}
+				}
+				$out .= '</div>';
 			}
-		}
-		$out .= '</div>';
-	endwhile;
+		endwhile;
+	}
 	$out.='</div>';
 	//wp_reset_postdata();
 }
