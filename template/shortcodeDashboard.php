@@ -26,11 +26,11 @@ if ($posts->have_posts()){
 		<h2>Path Name: '.get_the_title().'</h2>';
 		if($cUserID){
 			if($userPath != $postID){
-			$out .='<button class="add-to-lp" data-id="'.$postID.'"
+			$out .='<button class="add-to-lp btn-success" data-id="'.$postID.'"
 			data-nonce="'.wp_create_nonce('learning_path_add_path_to_user').'" data-user="'.$cUserID.'">Take this path</button>';
 			} else {
 				$out .= '<p>Current Path</p>';
-				$out .='<button class="add-to-lp remove-lp-path" data-id=""
+				$out .='<button class="btn-danger add-to-lp remove-lp-path" data-id=""
 			data-nonce="'.wp_create_nonce('learning_path_add_path_to_user').'" data-user="'.$cUserID.'">quit this path</button>';
 			} 
 		}
