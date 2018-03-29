@@ -76,7 +76,7 @@ class LP_Addon_LearningPath_Dashboard{
             $currentPath = $this->get_path_by_ID($sPath[0]);
             $post = get_post($currentPath);
             $out .= '<h4>'.$currentPath[0]->post_title.'</h4></div>';
-            $out .='<button class="btn-danger add-to-lp remove-lp-path" data-id=""
+            $out .='<button class="add-to-lp remove-lp-path" data-id=""
 			data-nonce="'.wp_create_nonce('learning_path_add_path_to_user').'" data-user="'.$cUser->ID.'">change your path</button>';
             $out .= '<div class="row"><div class="col-md-2"></div>';
             
@@ -106,7 +106,7 @@ class LP_Addon_LearningPath_Dashboard{
                     $currentPaths->the_post();
                     $postID = get_the_ID();
                     $out .= '<p><strong>'.get_the_title().'</strong></p>';
-                    $out .='<button class="btn-success add-to-lp" data-id="'.$postID.'"
+                    $out .='<button style="background-color: #ffcdo3;" class="add-to-lp" data-id="'.$postID.'"
                     data-nonce="'.wp_create_nonce('learning_path_add_path_to_user').'" data-user="'.$cUser->ID.'">Take this path</button>';
                 }
             }
@@ -208,38 +208,7 @@ class LP_Addon_LearningPath_Dashboard{
         )
     );
 }
-//before deciding to use rwmb 
-/*
-public function sortable_courses(){
-    echo '<ul class="sortable  ui-sortable">';
-    $course_options = $this->get_courses();
-    foreach( $course_options as $p )
-       echo "<li><code class='hndle'> -[]- </code> {$p->post_title}</li>";
-    echo '</ul>';
-    ?>
-        <script type="text/javascript">
-        jQuery(document).ready(function($) 
-        {    
-            $( '.sortable' ).sortable({
-                opacity: 0.6,
-                revert: true,
-                cursor: 'move',
-                handle: '.hndle',
-                placeholder: {
-                    element: function(currentItem) {
-                        return $("<li style='background:#E7E8AD'>&nbsp;</li>")[0];
-                    },
-                    update: function(container, p) {
-                        return;
-                    }
-                }
-            });
-            $( '.sortable' ).disableSelection();
-        });
-        </script>
-    <?php
-}
-*/
+
 //add metaboxes to the custom post type learn_press_learning_path_cpt
 public function add_learning_path_meta_boxes() {
     $prefix                                        = '_lp_';
