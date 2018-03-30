@@ -51,7 +51,7 @@ if($cUserID == ''){
 				$postID = get_the_ID();
 				if ($userPath == $postID){
 					$out .= '<div class="learning_path row text-center">
-					<h2>Your Current Path: '.get_the_title().'</h2>';
+					<h2>Your Current Path '.get_the_title().'</h2>';
 					//$out .= '<p>Current Path</p>';
 					$out .='<button class="add-to-lp remove-lp-path" data-id=""
 					data-nonce="'.wp_create_nonce('learning_path_add_path_to_user').'" data-user="'.$cUserID.'">
