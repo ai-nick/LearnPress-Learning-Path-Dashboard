@@ -59,17 +59,20 @@ if($cUserID == ''){
 					$out .='<div class="col-md-2"></div>';
 					$courseID = get_post_meta($postID, '_lp_learning_path_course', false);
 					//$arrayLen = sizeof($courseID[0]);
+					//$out .= '<div><p>'.$courseID[0][0].'</p></div>';
 					foreach($courseID[0] as $i){
-						$courseObj = LP_Course::get_course($i);
-						$out .='<div class="col-md-4 centered"><h3><a href="'.get_the_permalink($i).'">'.$courseObj->post->post_title.'</a></h3>';
-						$out .='<div class="img-responsive">'.$courseObj->get_image().'</div><br><br>';
-						$out .='<p>'.$courseObj->post->post_content.'</p>';
+						$courseObj = get_post($i);
+						$out .='<div class="col-md-4 centered"><h3><a href="'.get_the_permalink($i).'">'.$courseObj->post_title.'</a></h3>';
+						$out .='<div class="img-responsive">'.get_the_post_thumbnail($courseObj).'</div><br><br>';
+						$out .='<p>'.$courseObj->post_content.'</p>';
+						/*
 						$userGrade = $courseObj->get_course_result_html($cUserID);
 						if($userGrade){
 							$out .='<div><p>Course Status: <strong>'.$userGrade.'</strong></p></div></div>';
 						} else {
 							$out .='<div><p>Course Status: <strong> Not Enrolled </strong></p></div></div>';
 						}
+						*/
 					}
 					$out .= '</div>';
 				}
