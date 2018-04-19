@@ -15,7 +15,7 @@ $out = '<div class="container-fluid">';
 $cUserID = get_current_user_id();
 if($cUserID == ''){
 	$out .= '<div class="text-centered"><h1 class="text-centered">Step 1: Create An Account</h1>';
-	$out .= '<p>If you havent registered for an account yet click <a href="'.get_site_url().'/register">
+	$out .= '<p>If you haven\'t registered for an account yet click <a href="'.get_site_url().'/register">
 	here</a> to create one, if you have already made an account click <a href="'.get_site_url().'/login">
 	here</a> to go to the login page</p></div></div></div>';
 	wp_reset_postdata();
@@ -29,12 +29,12 @@ if($cUserID == ''){
 	//$out .='<p>'.($userPath).'</p>';
 	if ($posts->have_posts()){
 		if($userPath == ''){
-			$out .= '<div class="col-sm-1"></div>';
+			//$out .= '<div class="col-sm-1"></div>';
 			$out .= '<div class="learning_path row text-center"><h1>Step 2: Choose A Learning Path</h1>';
 			while ($posts->have_posts()):
 				$posts->the_post();
 				$postID = get_the_ID();
-				$out .= '<div class="learning_path col-md-3 text-center"><br>
+				$out .= '<div class="learning_path"><br>
 				<h3>Path Name: '.get_the_title().'</h3><br>';
 				if($cUserID){
 					$out .='<button class="add-to-lp" data-id="'.$postID.'"
@@ -67,6 +67,13 @@ if($cUserID == ''){
 						$out .='<div class="img-responsive">'.$courseObj->get_image().'</div><br><br>';
 						$out .='<p>'.$courseObj->post->post_content.'</p>';
 						$userGrade = $courseObj->get_course_result_html($cUserID);
+						if (strpos($userGrade, 'of') !== false){
+							$pieces = explode(" ", $userGrade);
+							$total_items = (int)$pieces[2];
+							$items_complete = (int)$pieces[0];
+							$percent = ($items_complete/$total_items)*100;
+							$userGrade = $percent . '% completed';
+						}
 						if($userGrade){
 							$out .='<div><p>Course Status: <strong>'.$userGrade.'</strong></p></div></div>';
 						} else {
