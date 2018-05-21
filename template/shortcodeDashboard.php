@@ -9,7 +9,7 @@
 defined( 'ABSPATH' ) || exit();
 //global $post;
 
-
+$thisUser = learn_press_get_current_user();
 $out = '<div class="container-fluid">';
 //$cUser = learn_press_get_current_user();
 $cUserID = get_current_user_id();
@@ -66,14 +66,15 @@ if($cUserID == ''){
 						$out .='<div class="col-md-4 centered"><h3><a href="'.get_the_permalink($i).'">'.$courseObj->post->post_title.'</a></h3>';
 						$out .='<div class="img-responsive">'.$courseObj->get_image().'</div><br><br>';
 						$out .='<p>'.$courseObj->post->post_content.'</p>';
-						$userGrade = $courseObj->get_course_result_html($cUserID);
+						$userGrade = $thisUser->get_course_grade($i);
+						/*
 						if (strpos($userGrade, 'of') !== false){
 							$pieces = explode(" ", $userGrade);
 							$total_items = (int)$pieces[2];
 							$items_complete = (int)$pieces[0];
 							$percent = ($items_complete/$total_items)*100;
-							$userGrade = $percent . '% completed';
-						}
+							$userGrade = $userGrade;
+						} */
 						if($userGrade){
 							$out .='<div><p>Course Status: <strong>'.$userGrade.'</strong></p></div></div>';
 						} else {
