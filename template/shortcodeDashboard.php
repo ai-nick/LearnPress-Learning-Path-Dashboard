@@ -19,7 +19,7 @@ if($cUserID == ''){
 	$out .= '<div class="text-centered"><h1 class="text-centered">Step 1: Create An Account</h1>';
 	$out .= '<p>If you havent registered for an account yet click <a href="'.get_site_url().'/register">
 	here</a> to create one, if you have already made an account click <a href="'.get_site_url().'/login">
-	here</a> to go to the login page</p></div>';
+	here</a> to go to the login page</p></div></div>';
 	wp_reset_postdata();
 	echo $out;
 } else {
@@ -62,17 +62,16 @@ if($cUserID == ''){
 					//$out .= '<div><p>'.$courseID[0][0].'</p></div>';
 					foreach($courseID[0] as $i){
 						$courseObj = get_post($i);
-						$out .='<div class="col-md-4 centered"><h3><a href="'.get_the_permalink($i).'">'.$courseObj->post_title.'</a></h3>';
-						$out .='<div class="img-responsive">'.get_the_post_thumbnail($courseObj).'</div><br><br>';
+						$out .='<div class="col-md-4 centered"><h3><a href="'.get_the_permalink($courseObj->ID).'">'.$courseObj->post_title.'</a></h3>';
+						$out .='<div class="img-responsive">'.get_the_post_thumbnail($courseObj->ID).'</div><br><br>';
 						$out .='<p>'.$courseObj->post_content.'</p>';
-						/*
-						$userGrade = $courseObj->get_course_result_html($cUserID);
+						$cU = learn_press_get_current_user();
+						$userGrade = $cU -> get_course_status($i);
 						if($userGrade){
 							$out .='<div><p>Course Status: <strong>'.$userGrade.'</strong></p></div></div>';
 						} else {
 							$out .='<div><p>Course Status: <strong> Not Enrolled </strong></p></div></div>';
 						}
-						*/
 					}
 					$out .= '</div>';
 				}
@@ -82,6 +81,6 @@ if($cUserID == ''){
 		//wp_reset_postdata();
 	}
 	wp_reset_postdata();
-	echo $out;
+	echo $out.'</div>';
 	}
 ?>

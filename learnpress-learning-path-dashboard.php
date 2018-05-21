@@ -68,28 +68,29 @@ class LP_Addon_LearningPath_Dashboard{
     }
 
     function learningpath_summary_loader(){
-        $cUser = learn_press_get_current_user();
-        $sPath = get_user_meta($cUser->id, '_lpr_learning_path');
+        $cUser = get_current_user_id();
+        $sPath = get_user_meta($cUser, '_lpr_learning_path', true);
         $out = '<div>';
         if ($sPath){
             $out.='<h2>Current Learning Path:</h2>';
-            $currentPath = $this->get_path_by_ID($sPath[0]);
+            $currentPath = $this->get_path_by_ID($sPath);
             $post = get_post($currentPath);
             $out .= '<h4>'.$currentPath[0]->post_title.'</h4></div>';
             $out .='<button class="btn-danger add-to-lp remove-lp-path" data-id=""
-			data-nonce="'.wp_create_nonce('learning_path_add_path_to_user').'" data-user="'.$cUser->ID.'">change your path</button>';
+			data-nonce="'.wp_create_nonce('learning_path_add_path_to_user').'" data-user="'.$cUser.'">change your path</button>';
             $out .= '<div class="row"><div class="col-md-2"></div>';
             
-            $courseID = get_post_meta($sPath[0], '_lp_learning_path_course', false);
+            $courseID = get_post_meta($sPath, '_lp_learning_path_course', false);
             //$out .= '<p>'.$courseID[0][1].'</p></div>';
             
             //$arrayLen = sizeof($courseID[0]);
             foreach($courseID[0] as $i){
-                $courseObj = LP_Course::get_course($i);
-                $out .='<div class="col-md-4 centered"><h3><a href="'.get_the_permalink($i).'">'.$courseObj->post->post_title.'</a></h3>';
-                $out .='<div class="img-responsive">'.$courseObj->get_image().'</div><br><br>';
-                $out .='<p>'.$courseObj->post->post_content.'</p>';
-                $userGrade = $cUser->get_course_grade($i);
+                $courseObj = get_post($i);
+                $out .='<div class="col-md-4 centered"><h3><a href="'.get_the_permalink($courseObj->ID).'">'.$courseObj->post_title.'</a></h3>';
+                $out .='<div class="img-responsive">'.get_the_post_thumbnail($courseObj->ID).'</div><br><br>';
+                $out .='<p>'.$courseObj->post_content.'</p>';
+                $cU = learn_press_get_current_user();
+                $userGrade = $cU -> get_course_status($i);
                 if($userGrade){
                     $out .='<div><p>Course Status: <strong>'.$userGrade.'</strong></p></div></div>';
                 } else {
