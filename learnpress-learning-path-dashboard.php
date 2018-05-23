@@ -90,7 +90,8 @@ class LP_Addon_LearningPath_Dashboard{
                 $out .='<div class="img-responsive">'.get_the_post_thumbnail($courseObj->ID).'</div><br><br>';
                 $out .='<p>'.$courseObj->post_content.'</p>';
                 $cU = learn_press_get_current_user();
-                $userGrade = $cU -> get_course_status($i);
+                $userCourse = $cU -> get_course_data($i);
+                $userGrade = $userCourse->get_grade('display');
                 if($userGrade){
                     $out .='<div><p>Course Status: <strong>'.$userGrade.'</strong></p></div></div>';
                 } else {
