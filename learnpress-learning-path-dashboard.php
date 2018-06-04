@@ -109,7 +109,7 @@ class LP_Addon_LearningPath_Dashboard{
                     $postID = get_the_ID();
                     $out .= '<p><strong>'.get_the_title().'</strong></p>';
                     $out .='<button class="btn-success add-to-lp" data-id="'.$postID.'"
-                    data-nonce="'.wp_create_nonce('learning_path_add_path_to_user').'" data-user="'.$cUser->ID.'">Take this path</button>';
+                    data-nonce="'.wp_create_nonce('learning_path_add_path_to_user').'" data-user="'.$cUser.'">Take this path</button>';
                 }
             }
             $out.='</div>';
