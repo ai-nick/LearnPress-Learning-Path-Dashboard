@@ -16,19 +16,21 @@ $out = '<div class="container-fluid">';
 //$cUser = learn_press_get_current_user();
 $cUserID = get_current_user_id();
 if($cUserID == ''){
-	$out .= '<div class="text-centered"><h1 class="text-centered">Step 1: Create An Account</h1>';
-	$out .= '<p>If you havent registered for an account yet click <a href="'.get_site_url().'/register">
+	$out .= '<div class=" panel panel-warning text-centered"><div class="panel-heading"><h1 class="text-centered">Step 1: Create An Account</h1></div>';
+	$out .= '<div class="panel-body"><p>If you havent registered for an account yet click <a href="'.get_site_url().'/register">
 	here</a> to create one, if you have already made an account click <a href="'.get_site_url().'/login">
-	here</a> to go to the login page</p></div></div>';
+	here</a> to go to the login page</p></div></div></div></div>';
 	wp_reset_postdata();
 	echo $out;
 } else {
 	$userPath = get_user_meta($cUserID, '_lpr_learning_path', true);
 	//$out .='<p>'.$userPath[0].'</p>';
 	//$out .='<p>'.($userPath).'</p>';
+	//$out .= '<div class="panel panel-warning">';
 	if ($posts->have_posts()){
 		if($userPath == ''){
-			$out .= '<div class="learning_path row text-center"><h1>Step 2: Choose A Learning Path</h1>';
+			$out .= '<div class="panel panel-warning text-center"><div class="panel-heading"><h1>Step 2: Choose A Learning Path</h1></div>';
+			$out .= '<div class="panel-body">';
 			while ($posts->have_posts()):
 				$posts->the_post();
 				$postID = get_the_ID();
@@ -42,14 +44,14 @@ if($cUserID == ''){
 				$out .='<p> ' .get_the_content().'</p>';
 				$out .= '</div>';
 			endwhile;
-			$out .= '</div>';
+			$out .= '</div></div>';
 		} else {
 			while ($posts->have_posts()):
 				$posts->the_post();
 				$postID = get_the_ID();
 				if ($userPath == $postID){
-					$out .= '<div class="learning_path row text-center">
-					<h2>Your Current Path: '.get_the_title().'</h2>';
+					$out .= '<div class="panel panel-warning text-center"><div class="panel-heading"><h1>
+					Your Current Path: '.get_the_title().'</h1></div><div class="panel-body">';
 					//$out .= '<p>Current Path</p>';
 					$out .='<button class="btn-danger add-to-lp remove-lp-path" data-id=""
 					data-nonce="'.wp_create_nonce('learning_path_add_path_to_user').'" data-user="'.$cUserID.'">
@@ -74,14 +76,15 @@ if($cUserID == ''){
 							$out .='<div><p>Course Status: <strong> Not Enrolled </strong></p></div></div>';
 						}
 					}
-					$out .= '</div>';
+					$out .= '</div></div>';
 				}
 			endwhile;
 		}
-		$out.='</div>';
+		$out.='</div></div>';
 		//wp_reset_postdata();
 	}
+	$out .= '</div>';
 	wp_reset_postdata();
-	echo $out.'</div>';
+	echo $out;
 	}
 ?>
