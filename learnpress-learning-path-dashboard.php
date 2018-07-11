@@ -89,11 +89,11 @@ class LP_Addon_LearningPath_Dashboard{
                 $out .='<div class="col-md-4 centered"><h3><a href="'.get_the_permalink($i).'">'.$courseObj->post->post_title.'</a></h3>';
                 $out .='<div class="img-responsive">'.$courseObj->get_image().'</div><br><br>';
                 $out .='<p>'.$courseObj->post->post_content.'</p>';
-                $userGrade = $cUser->get_course_grade($i);
+                $userGrade = $cUser->has_passed_course($i);
                 if($userGrade){
-                    $out .='<div><p>Course Status: <strong>'.$userGrade.'</strong></p></div></div>';
+                    $out .='<div><p>Course Status: <strong> Passed! </strong></p></div></div>';
                 } else {
-                    $out .='<div><p>Course Status: <strong> Not Enrolled </strong></p></div></div>';
+                    $out .='<div><p>Course Status: <strong>Not Complete</strong></p></div></div>';
                 }
             }
             $out .= '</div>';
