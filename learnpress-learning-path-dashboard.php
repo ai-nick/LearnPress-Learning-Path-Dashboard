@@ -63,37 +63,44 @@ class LP_Addon_LearningPath_Dashboard{
         add_shortcode('lp_learning_path', array($this, 'learning_path_query'));
         add_action( 'wp_enqueue_scripts', array( $this, 'learningPath_scripts' ) );
         add_shortcode('lp_learning_path_summary', array($this, 'learningpath_summary_loader'));
+        add_shortcode('sb_lost_password', array($this, 'wc_lost_password_form'));
         LP_Request_Handler::register_ajax( 'learning_path_add_path_to_user', array( $this, 'learning_path_add_path_to_user' ) );
         //add_action( 'admin_menu', array($this, 'addMyMenu'));
     }
 
+    function wc_lost_password_form($atts){
+        return wc_get_template( 'myaccount/form-lost-password.php', array( 'form' => 'lost_password' ) );
+    }
+
     function learningpath_summary_loader(){
-        $cUser = learn_press_get_current_user();
-        $sPath = get_user_meta($cUser->id, '_lpr_learning_path');
+        $cUser = get_current_user_id();
+        $sPath = get_user_meta($cUser, '_lpr_learning_path', true);
         $out = '<div>';
         if ($sPath){
             $out.='<h2>Current Learning Path:</h2>';
-            $currentPath = $this->get_path_by_ID($sPath[0]);
+            $currentPath = $this->get_path_by_ID($sPath);
             $post = get_post($currentPath);
             $out .= '<h4>'.$currentPath[0]->post_title.'</h4></div>';
-            $out .='<button class="add-to-lp remove-lp-path" data-id=""
-			data-nonce="'.wp_create_nonce('learning_path_add_path_to_user').'" data-user="'.$cUser->ID.'">change your path</button>';
+            $out .='<button class="btn-danger add-to-lp remove-lp-path" data-id=""
+			data-nonce="'.wp_create_nonce('learning_path_add_path_to_user').'" data-user="'.$cUser.'">change your path</button>';
             $out .= '<div class="row"><div class="col-md-2"></div>';
             
-            $courseID = get_post_meta($sPath[0], '_lp_learning_path_course', false);
+            $courseID = get_post_meta($sPath, '_lp_learning_path_course', false);
             //$out .= '<p>'.$courseID[0][1].'</p></div>';
             
             //$arrayLen = sizeof($courseID[0]);
             foreach($courseID[0] as $i){
-                $courseObj = LP_Course::get_course($i);
-                $out .='<div class="col-md-4 centered"><h3><a href="'.get_the_permalink($i).'">'.$courseObj->post->post_title.'</a></h3>';
-                $out .='<div class="img-responsive">'.$courseObj->get_image().'</div><br><br>';
-                $out .='<p>'.$courseObj->post->post_content.'</p>';
-                $userGrade = $cUser->has_passed_course($i);
+                $courseObj = get_post($i);
+                $out .='<div class="col-md-4 centered"><h3><a href="'.get_the_permalink($courseObj->ID).'">'.$courseObj->post_title.'</a></h3>';
+                $out .='<div class="img-responsive">'.get_the_post_thumbnail($courseObj->ID).'</div><br><br>';
+                $out .='<p>'.$courseObj->post_content.'</p>';
+                $cU = learn_press_get_current_user();
+                $userCourse = $cU -> get_course_data($i);
+                $userGrade = $userCourse->get_grade('display');
                 if($userGrade){
-                    $out .='<div><p>Course Status: <strong> Passed! </strong></p></div></div>';
+                    $out .='<div><p>Course Status: <strong>'.$userGrade.'</strong></p></div></div>';
                 } else {
-                    $out .='<div><p>Course Status: <strong>Not Complete</strong></p></div></div>';
+                    $out .='<div><p>Course Status: <strong> Not Enrolled </strong></p></div></div>';
                 }
             }
             $out .= '</div>';
@@ -106,8 +113,8 @@ class LP_Addon_LearningPath_Dashboard{
                     $currentPaths->the_post();
                     $postID = get_the_ID();
                     $out .= '<p><strong>'.get_the_title().'</strong></p>';
-                    $out .='<button style="background-color: #ffcdo3;" class="add-to-lp" data-id="'.$postID.'"
-                    data-nonce="'.wp_create_nonce('learning_path_add_path_to_user').'" data-user="'.$cUser->ID.'">Take this path</button>';
+                    $out .='<button class="btn-success add-to-lp" data-id="'.$postID.'"
+                    data-nonce="'.wp_create_nonce('learning_path_add_path_to_user').'" data-user="'.$cUser.'">Take this path</button>';
                 }
             }
             $out.='</div>';
@@ -208,7 +215,38 @@ class LP_Addon_LearningPath_Dashboard{
         )
     );
 }
-
+//before deciding to use rwmb 
+/*
+public function sortable_courses(){
+    echo '<ul class="sortable  ui-sortable">';
+    $course_options = $this->get_courses();
+    foreach( $course_options as $p )
+       echo "<li><code class='hndle'> -[]- </code> {$p->post_title}</li>";
+    echo '</ul>';
+    ?>
+        <script type="text/javascript">
+        jQuery(document).ready(function($) 
+        {    
+            $( '.sortable' ).sortable({
+                opacity: 0.6,
+                revert: true,
+                cursor: 'move',
+                handle: '.hndle',
+                placeholder: {
+                    element: function(currentItem) {
+                        return $("<li style='background:#E7E8AD'>&nbsp;</li>")[0];
+                    },
+                    update: function(container, p) {
+                        return;
+                    }
+                }
+            });
+            $( '.sortable' ).disableSelection();
+        });
+        </script>
+    <?php
+}
+*/
 //add metaboxes to the custom post type learn_press_learning_path_cpt
 public function add_learning_path_meta_boxes() {
     $prefix                                        = '_lp_';
