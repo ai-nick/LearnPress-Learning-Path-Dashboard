@@ -56,7 +56,7 @@ if($cUserID == ''){
 					//$out .= '<p>Current Path</p>';
 					$out .='<button class="btn-danger add-to-lp remove-lp-path" data-id=""
 					data-nonce="'.wp_create_nonce('learning_path_add_path_to_user').'" data-user="'.$cUserID.'">
-					change your path</button>';
+					Change Your Path</button>';
 					$out .='<p> ' .get_the_content().'</p>';
 					$out .='<h3>Step 3: Pass The Following Courses</h3>';
 					$out .='<div class="col-md-2"></div>';
