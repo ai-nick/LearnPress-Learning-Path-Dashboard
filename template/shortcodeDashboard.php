@@ -15,6 +15,8 @@ $posts = new WP_Query($argies);
 $out = '<div class="container-fluid">';
 //$cUser = learn_press_get_current_user();
 $cUserID = get_current_user_id();
+$passed = array();
+$bgCheckStatus = get_user_meta($cUserID, 'user_bg_check_passed', true);
 if($cUserID == ''){
 	$out .= '<div class=" panel panel-warning text-centered"><div class="panel-heading"><h1 class="text-centered">Step 1: Create An Account</h1></div>';
 	$out .= '<div class="panel-body"><p>If you havent registered for an account yet click <a href="'.get_site_url().'/register">
@@ -78,6 +80,9 @@ if($cUserID == ''){
 						$userGrade = $cU -> has_passed_course($i);
 						if($userGrade){
 							$out .='<div><p>Course Status: <strong>Passed!</strong></p></div></div>';
+							if($bgCheckStatus == 1){
+								$out .= '<h4> congratulation you are now a '.$courseObj->post_title.' certified instructor!'; 
+							}
 						} else {
 							$out .='<div><p>Course Status: <strong> Not Complete </strong></p></div></div>';
 						}
