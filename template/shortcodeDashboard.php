@@ -31,7 +31,13 @@ if($cUserID == ''){
 		if($userPath == ''){
 			$out .= '<div class="panel panel-warning text-center"><div class="panel-heading"><h1>Step 2: Choose A Learning Path</h1></div>';
 			$out .= '<div class="panel-body">';
-			$out .= '<p>Before you get started, we’ll need to go through the Brand Enthusiast Course.  Here, you’ll learn about the core values of Strider as well as some basic safety tips and fun facts.  After that, you’ll have the choice to choose which course or courses you’d like to take. The Early Learning Course is for those who would like to become a Certified Early Learning Strider Instructor to help teach young children how to ride a Strider bike! The Inclusive Learning Course will teach you how to instruct an Inclusive Learning Course. Inclusive Learning Courses are designed to teach and help those with disabilities how to enjoy riding a bike. Once you have completed the background check, the Brand Enthusiast Course, and your preferred path (Early Learning or Inclusive Learning), you will be awarded a certificate and gain access to the Certified Instructor Resources. </p>';
+			$out .= '<p>Before you get started, we’ll need to go through the Brand Enthusiast Course. 
+			 Here, you’ll learn about the core values of Strider as well as some basic safety tips and fun facts. 
+			  After that, you’ll have the choice to choose which course or courses you’d like to take. The Early Learning Course is for those who would like to become a 
+			  Certified Early Learning Strider Instructor to help teach young children how to ride a Strider bike! The Inclusive Learning Course will teach you how to instruct an 
+			  Inclusive Learning Course. Inclusive Learning Courses are designed to teach and help those with disabilities how to enjoy riding a bike. 
+			  Once you have completed the background check, the Brand Enthusiast Course, and your preferred path (Early Learning or Inclusive Learning), 
+			  you will be granted access to the Certified Instructor Resources. To be eligible for Strider Education pricing, you’ll need to fill out the <a href="https://www.striderbikes.com/education/application">Strider Education Instructor application</a>. In addition to filling out the Strider Education application, you’ll also need to submit a background check. IMPORTANT: NO REFUNDS WILL BE ISSUED FOR COURSES PURCHASED IF YOU DO NOT PASS YOUR BACKGROUND CHECK. </p>';
 			while ($posts->have_posts()):
 				$posts->the_post();
 				$postID = get_the_ID();
