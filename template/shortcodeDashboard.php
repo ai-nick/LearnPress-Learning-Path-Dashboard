@@ -81,7 +81,7 @@ if($cUserID == ''){
 						if($userGrade){
 							$out .='<div><p>Course Status: <strong>Passed!</strong></p></div></div>';
 							if($bgCheckStatus == 1){
-								$out .= '<h4> congratulation you are now a '.$courseObj->post_title.' certified instructor!'; 
+								$passed[] = $courseObj->post_title;
 							}
 						} else {
 							$out .='<div><p>Course Status: <strong> Not Complete </strong></p></div></div>';
@@ -93,6 +93,11 @@ if($cUserID == ''){
 		}
 		$out.='</div></div>';
 		//wp_reset_postdata();
+	}
+	if(sizeof($passed) != 0){
+		foreach($passed as $pc){
+			$out .= '<h2> Congrats you are now a certified '.$pc.' instructor';
+		}
 	}
 	$out .= '</div>';
 	wp_reset_postdata();
