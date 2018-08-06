@@ -91,13 +91,13 @@ if($cUserID == ''){
 				}
 			endwhile;
 		}
+		if(sizeof($passed) != 0){
+			foreach($passed as $pc){
+				$out .= '<h2> Congrats you are now a certified '.$pc.' instructor';
+			}
+		}
 		$out.='</div></div>';
 		//wp_reset_postdata();
-	}
-	if(sizeof($passed) != 0){
-		foreach($passed as $pc){
-			$out .= '<h2> Congrats you are now a certified '.$pc.' instructor';
-		}
 	}
 	$out .= '</div>';
 	wp_reset_postdata();
