@@ -93,7 +93,7 @@ if($cUserID == ''){
 		}
 		if(sizeof($passed) != 0){
 			foreach($passed as $pc){
-				$out .= '<h2> Congrats you are now a certified '.$pc.' instructor';
+				$out .= '<h2 class="text-center"> Congrats you are now a certified '.$pc.' instructor';
 			}
 		}
 		$out.='</div></div>';
