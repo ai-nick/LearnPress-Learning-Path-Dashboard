@@ -93,7 +93,7 @@ if($cUserID == ''){
 			endwhile;
 		}
 		if(sizeof($passed) != 0){
-			$outHeader .= '<h2 class="text-center">Congratulations have earned the following certifications:'
+			$outHeader .= '<h2 class="text-center">Congratulations have earned the following certifications:';
 			foreach($passed as $pc){
 				$outHeader .= $pc.' instructor';
 			}
