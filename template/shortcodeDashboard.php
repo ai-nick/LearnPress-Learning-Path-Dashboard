@@ -81,7 +81,7 @@ if($cUserID == ''){
 						$userGrade = $cU -> has_passed_course($i);
 						if($userGrade){
 							$out .='<div><p>Course Status: <strong>Passed!</strong></p></div></div>';
-							if($bgCheckStatus == 1 && $courseObj->post_title !== ""){
+							if($bgCheckStatus == 1 && $courseObj->post_title !== "Brand Enthusiast"){
 								$passed[] = $courseObj->post_title;
 							}
 						} else {
