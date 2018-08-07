@@ -16,6 +16,7 @@ $out = '<div class="container-fluid">';
 //$cUser = learn_press_get_current_user();
 $cUserID = get_current_user_id();
 $passed = array();
+$outHeader = '';
 $bgCheckStatus = get_user_meta($cUserID, 'user_bg_check_passed', true);
 if($cUserID == ''){
 	$out .= '<div class=" panel panel-warning text-centered"><div class="panel-heading"><h1 class="text-centered">Step 1: Create An Account</h1></div>';
@@ -93,7 +94,7 @@ if($cUserID == ''){
 		}
 		if(sizeof($passed) != 0){
 			foreach($passed as $pc){
-				$out .= '<h2 class="text-center"> Congrats you are now a certified '.$pc.' instructor';
+				$outHeader .= '<h2 class="text-center"> Congrats you are now a certified '.$pc.' instructor</h2>';
 			}
 		}
 		$out.='</div></div>';
@@ -101,6 +102,6 @@ if($cUserID == ''){
 	}
 	$out .= '</div>';
 	wp_reset_postdata();
-	echo $out;
+	echo $outHeader . $out;
 	}
 ?>
