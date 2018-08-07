@@ -97,7 +97,7 @@ if($cUserID == ''){
 			foreach($passed as $pc){
 				$outHeader .= '<br />' . $pc.' Instructor';
 			}
-			$outHeader .='</h2';
+			$outHeader .='</h2><br />';
 		}
 		$out.='</div></div>';
 		//wp_reset_postdata();
