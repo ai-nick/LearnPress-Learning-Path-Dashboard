@@ -93,9 +93,11 @@ if($cUserID == ''){
 			endwhile;
 		}
 		if(sizeof($passed) != 0){
+			$outHeader .= '<h2 class="text-center">Congratulations have earned the following certifications:'
 			foreach($passed as $pc){
-				$outHeader .= '<h2 class="text-center"> Congrats you are now a certified '.$pc.' instructor</h2>';
+				$outHeader .= $pc.' instructor';
 			}
+			$outHeader .='</h2';
 		}
 		$out.='</div></div>';
 		//wp_reset_postdata();
